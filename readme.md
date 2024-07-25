@@ -1,5 +1,3 @@
-# ARCHIVING ON 1 DEC 2023 - SEE BELOW
-
 # yt-2005-watch  
 A YouTube frontend written with the Invidious api.  
 
