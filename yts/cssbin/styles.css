@@ -128,7 +128,7 @@ a.title:hover {
 /* Modules */
 
 .moduleEntrySelected {
-    background-image: url(../imgbin/table_results_selected_bg.gif);
+    background-image: url(/yts/imgbin/table_results_selected_bg.gif);
     background-repeat: repeat-x;
     background-color: #FFFFCC;
     background-position: left top;
@@ -138,7 +138,7 @@ a.title:hover {
 
 .moduleEntry {
     background-color: #DDD;
-    background-image: url(../imgbin/table_results_bg.gif);
+    background-image: url(/yts/imgbin/table_results_bg.gif);
     background-position: left top;
     background-repeat: repeat-x;
     border-bottom: 1px dashed #999999;
@@ -191,7 +191,7 @@ a.title:hover {
 
 .moduleFeatured {
     background-color: #DDD;
-    background-image: url(img/table_results_bg.gif);
+    background-image: url(/imgbin/table_results_bg.gif);
     background-position: left top;
     background-repeat: repeat-x;
     border-bottom: 1px dashed #999999;
@@ -229,7 +229,7 @@ a.title:hover {
 .moduleFrameEntrySelected {
     width: 270;
     background-color: #FFFFCC;
-    background-image: url(img/table_results_selected_bg.gif);
+    background-image: url(/yts/imgbin/table_results_selected_bg.gif);
     background-repeat: repeat-x;
     background-position: left top;
     border-bottom: 1px dashed #999999;
@@ -239,7 +239,7 @@ a.title:hover {
 .moduleFrameEntry {
     width: 270;
     background-color: #DDD;
-    background-image: url(img/table_results_bg.gif);
+    background-image: url(/yts/imgbin/table_results_bg.gif);
     background-position: left top;
     background-repeat: repeat-x;
     border-bottom: 1px dashed #999999;

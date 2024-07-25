@@ -1,60 +1,5 @@
-<?php
-// check if a video id is here.
-if (isset($_GET['v'])) {
-    header("Location: watch.php?v=" . $_GET['v']);
-    die();
-}
-include_once("includes/config.inc.php");
-include("includes/youtubei/browse.php");
-
-// form a youtubei request to /youtubei/v1/browse, then get the first 10 results
-// we then fetch data with /youtube1/v1/player 
-$response_object = requestBrowse("FEwhat_to_watch");
-
-$response = json_decode($response_object);
-function homepageFeed($number, $response)
-{
-    $feedobj = $response
-        ->contents
-        ->twoColumnBrowseResultsRenderer
-        ->tabs[0]
-        ->tabRenderer
-        ->content
-        ->richGridRenderer
-        ->contents[$number];
-    //print_r($feedobj);
-    return $feedobj;
-}
-for ($i = 0; $i < 10; $i++) {
-    // check if box is video 
-    $obj = homepageFeed($i, $response);
-    if (!isset($obj->richItemRenderer->content->videoRenderer)) {
-        $obj = homepageFeed($i += 1, $response);
-    } else {
-        // create details array
-        $obj_accessor = $obj->richItemRenderer->content->videoRenderer;
-        $contents = array(
-            "videoTitle" => $obj_accessor->title->runs[0]->text,
-            "videoThumbnail" => $obj_accessor->thumbnail->thumbnails[0]->url,
-            "videoId" => $obj_accessor->videoId,
-            "videoDescription" => "<i>No description</i>",
-            // "videoDescription" => $obj_accessor->descriptionSnippet->runs[0]->text,
-            "videoRuntime" => $obj_accessor->lengthText->simpleText,
-            "videoViewcount" => $obj_accessor->viewCountText->simpleText,
-            "videoAuthor" => $obj_accessor->shortBylineText->runs[0]->text,
-            "videoUploadDate" => $obj_accessor->publishedTimeText->simpleText,
-            "authorChannelId" => $obj_accessor->shortBylineText->runs[0]->navigationEndpoint->browseEndpoint->browseId,
-        );
-        // check for videos without description
-        if (isset($obj_accessor->descriptionSnippet->runs[0]->text)) {
-            $obj_details["videoDescription"] = $obj_accessor->descriptionSnippet->runs[0]->text;
-        }
-    }
-}
-// ok we done now to the html section below...
-
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<?php include "includes/server.php";$r=invidiousGet("/popular"); ?>
 <html>
 
 <head>
@@ -139,53 +84,23 @@ for ($i = 0; $i < 10; $i++) {
                                                                 Today's Featured Videos
                                                             </div>
                                                         </div>
-                                                        <?php
-                                                        for ($i = 0; $i < 8; $i++) {
-                                                            // check if box is video 
-                                                            $obj = homepageFeed($i, $response);
-                                                            if (!isset($obj->richItemRenderer->content->videoRenderer)) {
-                                                                $obj = homepageFeed($i += 1, $response);
-                                                            } else {
-                                                                // create details array
-                                                                $obj_accessor = $obj->richItemRenderer->content->videoRenderer;
-                                                                $obj_details = array(
-                                                                    "videoTitle" => $obj_accessor->title->runs[0]->text,
-                                                                    "videoThumbnail" => $obj_accessor->thumbnail->thumbnails[0]->url,
-                                                                    "videoId" => $obj_accessor->videoId,
-                                                                    "videoDescription" => "<i>No description</i>",
-                                                                    // "videoDescription" => $obj_accessor->descriptionSnippet->runs[0]->text,
-                                                                    "videoRuntime" => $obj_accessor->lengthText->simpleText,
-                                                                    "videoViewcount" => $obj_accessor->viewCountText->simpleText,
-                                                                    "videoAuthor" => $obj_accessor->shortBylineText->runs[0]->text,
-                                                                    "videoUploadDate" => $obj_accessor->publishedTimeText->simpleText,
-                                                                    "authorChannelId" => $obj_accessor->shortBylineText->runs[0]->navigationEndpoint->browseEndpoint->browseId,
-                                                                );
-                                                                // check for videos without description
-                                                                if (isset($obj_accessor->descriptionSnippet->runs[0]->text)) {
-                                                                    $obj_details["videoDescription"] = $obj_accessor->descriptionSnippet->runs[0]->text;
-                                                                }
-                                                        ?>
-
-                                                                <div class="moduleEntry">
+                                                        <?php for ($i=0; $i < 8; $i++) { 
+                                                            echo '<div class="moduleEntry">
                                                                     <table width="565" cellspacing="0" cellpadding="0" border="0">
                                                                         <tbody>
                                                                             <tr valign="top">
-                                                                                <td><a href="watch.php?v=<?php echo $obj_details['videoId']; ?>"><img src="<?php echo $obj_details['videoThumbnail']; ?>" class="moduleEntryThumb" width="120" height="90"></a></td>
+                                                                                <td><a href="watch.php?v='.$r[$i]["videoId"].'"><img src="'.$r[$i]["videoThumbnails"][4]["url"].'" class="moduleEntryThumb" width="120" height="90"></a></td>
                                                                                 <td width="100%">
-                                                                                    <div class="moduleEntryTitle"><a href="watch.php?v=<?php echo $obj_details['videoId'] ?>"><?php echo $obj_details['videoTitle']; ?></a></div>
-                                                                                    <div class="moduleEntryDescription"><?php echo $obj_details['videoDescription']; ?></div>
-                                                                                    <div class="moduleEntryTags">
-                                                                                        Tags // <a href="results.php?search=Martinez">Martinez</a> : <a href="results.php?search=Real">Real</a> : <a href="results.php?search=NorCal">NorCal</a> : <a href="results.php?search=Awesome">Awesome</a> : </div>
-                                                                                    <div class="moduleEntryDetails">Added: <?php echo $obj_details['videoUploadDate']; ?> by <a href="profile.php?id=<?php echo $obj_details['authorChannelId']; ?>"><?php echo $obj_details['videoAuthor']; ?></a></div>
-                                                                                    <div class="moduleEntryDetails">Views: <?php echo $obj_details['videoViewcount']; ?> | Comments: 0</div>
+                                                                                    <div class="moduleEntryTitle"><a href="watch.php?v='.$r[$i]["videoId"].'">'.$r[$i]["title"].'</a></div>
+                                                                                    <div class="moduleEntryDescription"></div>
+                                                                                    <div class="moduleEntryDetails">Added: '.gmdate("F d, Y", $r[$i]["published"]).' by <a href="profile.php?id='.$r[$i]["authorId"].'">'.$r[$i]["author"].'</a></div>
+                                                                                    <div class="moduleEntryDetails">Views: '.$r[$i]["viewCount"].' | Comments: 0</div>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
-                                                                </div>
-                                                        <?php }
+                                                                </div>';
                                                         } ?>
-
                                                     </td>
                                                     <td><img src="yts/imgbin/pixel.gif" width="5" height="1"></td>
                                                 </tr>
@@ -383,32 +298,6 @@ for ($i = 0; $i < 10; $i++) {
 
                                         </div>
 
-                                        <div style="padding-top: 15px;">
-                                            <table width="180" cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFFCC" align="center">
-                                                <tbody>
-                                                    <tr>
-                                                        <td><img src="yts/imgbin/box_login_tl.gif" width="5" height="5"></td>
-                                                        <td><img src="yts/imgbin/pixel.gif" width="1" height="5"></td>
-                                                        <td><img src="yts/imgbin/box_login_tr.gif" width="5" height="5"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><img src="yts/imgbin/pixel.gif" width="5" height="1"></td>
-                                                        <td width="170">
-                                                            <div style="padding: 5px 5px 5px 5px;">
-                                                                <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-                                                                </script>
-                                                            </div>
-                                                        </td>
-                                                        <td><img src="yts/imgbin/pixel.gif" width="5" height="1"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><img src="yts/imgbin/box_login_bl.gif" width="5" height="5"></td>
-                                                        <td><img src="yts/imgbin/pixel.gif" width="1" height="5"></td>
-                                                        <td><img src="yts/imgbin/box_login_br.gif" width="5" height="5"></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
 
                                     </td>
                                 </tr>
