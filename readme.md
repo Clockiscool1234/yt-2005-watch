@@ -8,7 +8,7 @@ A YouTube frontend written with the Invidious api.
 - PHP ≥ 7.2.5
 
 ## Setup  
-1. Go to your webserver's documentroot, then do `git clone https://github.com/pixdoet/yt-2005-watch.git` on the directory.  
+1. Go to your webserver's documentroot, then do `git clone https://github.com/Clockiscool1234/yt-2005-watch.git` on the directory.  
 2. You're done! If you wanna configure stuff, edit `includes/server.php`, where you can change the instance of invidious.  
 
 ## Directory structure
